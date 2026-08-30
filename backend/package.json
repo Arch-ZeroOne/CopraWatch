@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pdf-parse": "^2.4.5",
     "pdf2json": "^4.0.3",
     "puppeteer": "^19.11.1"
   },

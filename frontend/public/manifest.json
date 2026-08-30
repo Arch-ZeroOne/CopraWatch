@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+
+  "name": "Copra Watch",
+
+  "version": "1.0",
+
+  "description": "Add,View and Delete simple notes",
+
+  "action": {
+    "default_popup": "index.html"
+  }
+}
