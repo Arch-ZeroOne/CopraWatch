@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "puppeteer browsers install chrome"
   },
   "keywords": [],
   "author": "",
@@ -15,8 +16,7 @@
     "express": "^5.2.1",
     "pdf-parse": "^2.4.5",
     "pdf2json": "^4.0.3",
-    "puppeteer": "^25.10.0",
-    "postinstall": "puppeteer browsers install chrome"
+    "puppeteer": "^25.10.0"
   },
   "license": "ISC",
   "type": "module",
