@@ -25,7 +25,7 @@ const getPrices = async () => {
   // defaultViewport -> uses the original size of browser
   const browser = await puppeteer.launch({
     headless: true,
-    defaultViewport: null,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
   //Opens a new page
