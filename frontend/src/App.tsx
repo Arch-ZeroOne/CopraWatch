@@ -1,70 +1,123 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Vegan } from "lucide-react";
+import { CircleDollarSign, Leaf, RefreshCw, Waves } from "lucide-react";
 import "./App.css";
 
 function App() {
   const [usPrice, setUsPrice] = useState("");
   const [phPrice, setPhPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const getPrices = async () => {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/");
+      setError(false);
 
-      const data = response.data;
-      setUsPrice(data.us);
-      setPhPrice(data.ph);
-      setLoading(false);
+      try {
+        const response = await axios.get("http://localhost:3000/");
+        setUsPrice(response.data.us);
+        setPhPrice(response.data.ph);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getPrices();
   }, []);
 
   return (
-    <div className="bg-blue-800 rounded-4xl w-80 flex items-center gap-3 flex-col font-[Poppins] mr-auto ml-auto mt-3 h-80 justify-center text-white">
-      {!loading ? (
-        <>
-          <div className="bg-blue-500/25 p-8 rounded-xl flex items-center justify-around gap-3">
-            <section className="flex items-center gap-2">
-              <Vegan />
-              <div className="flex-col">
-                <p className="font-bold">Dried Kernels</p>
-                <p className="text-xs text-gray-500">USA</p>
-              </div>
-            </section>
-            <p className="text-xl font-bold">{usPrice}</p>
-          </div>
+    <main className="app-shell">
+      <header className="topbar">
+        <a className="brand" href="/" aria-label="CopraWatch home">
+          <span className="brand-mark">
+            <Leaf size={16} />
+          </span>
+          <span>
+            Copra<span>Watch</span>
+          </span>
+        </a>
+        <span className="live-status">
+          <i /> Live
+        </span>
+      </header>
 
-          <div className="bg-blue-500/25 p-8 rounded-xl flex items-center justify-around gap-3">
-            <div className="flex items-center gap-2">
-              <Vegan />
-              <div className="flex-col">
-                <p className="font-bold">Copra/Kopras</p>
-                <p className="text-xs text-gray-500">Philippines</p>
-              </div>
-            </div>
-            <p className="text-xl font-bold">{phPrice}</p>
+      <section className="market-panel" aria-labelledby="market-heading">
+        <div className="panel-heading">
+          <div>
+            <p className="section-kicker">Today</p>
+            <h1 id="market-heading">Copra prices</h1>
           </div>
-        </>
-      ) : (
-        <Loader />
-      )}
-    </div>
+          <span className="updated-label">USD / local</span>
+        </div>
+
+        <div className="price-list">
+          <PriceCard
+            label="Dried kernels"
+            region="USA"
+            value={usPrice}
+            accent="sun"
+            icon={<CircleDollarSign size={19} />}
+            loading={loading}
+          />
+          <PriceCard
+            label="Copra / kopras"
+            region="Philippines"
+            value={phPrice}
+            accent="sea"
+            icon={<Waves size={19} />}
+            loading={loading}
+          />
+        </div>
+
+        {error && (
+          <div className="error-note" role="alert">
+            <span>Market data unavailable</span>
+            <RefreshCw size={14} />
+          </div>
+        )}
+        <p className="panel-note">Reference data sourced from Selina Wamucii</p>
+      </section>
+    </main>
   );
 }
 
-function Loader() {
+type PriceCardProps = {
+  label: string;
+  region: string;
+  value: string;
+  accent: "sun" | "sea";
+  icon: React.ReactNode;
+  loading: boolean;
+};
+
+function PriceCard({
+  label,
+  region,
+  value,
+  accent,
+  icon,
+  loading,
+}: PriceCardProps) {
   return (
-    <>
-      <div
-        className="loader border-t-2 rounded-full border-yellow-500 bg-yellow-300 animate-spin
-aspect-square w-8 flex justify-center items-center text-yellow-700"
-      >
-        $
+    <article className={`price-card ${accent}`}>
+      <div className="card-topline">
+        <span className="commodity-icon">{icon}</span>
+        <div className="card-label">
+          <h2>{label}</h2>
+          <span>{region}</span>
+        </div>
       </div>
-    </>
+      <div className="card-value">
+        {loading ? (
+          <div className="price-skeleton" />
+        ) : (
+          <strong>{value || "--"}</strong>
+        )}
+      </div>
+    </article>
   );
 }
 
